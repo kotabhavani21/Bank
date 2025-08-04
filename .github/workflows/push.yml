@@ -1,6 +1,6 @@
-name: First workflow
+name: Push workflow
 
-on: [push, issues]
+on: push
 
 jobs:
   build:
