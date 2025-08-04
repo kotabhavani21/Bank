@@ -1,0 +1,30 @@
+name: First workflow
+
+
+on:push
+
+jobs:
+ build:
+   runs on:undutu-latest
+   steps:
+     - name: Print build
+       run: echo 'build'
+
+
+test:
+  run on:undutu-latest
+  steps:
+    - name: Print test - chrome
+      run: echo 'test chrome'
+    - name: Print test - edge
+      run: echo 'test edge'
+
+
+
+deploy:
+  run on:undutu latest
+  steps:
+    - name" Print deploy
+      run: echo 'deploy'
+
+
