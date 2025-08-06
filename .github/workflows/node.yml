@@ -1,15 +1,16 @@
-name:Node Js Setup
+name: Node Js Setup
 
 on:
- workflow_dispatch
+  workflow_dispatch:
+
 jobs:
- node-js:
-  runs-on: ubuntu-latest
-  steps:
-   - name: Setup Node-js environment
-     uses: actions/setup-node@v3.9.1
-     with:
-      node-version: 22
-    -run: node -v
-      
-  
+  node-js:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3.9.1
+        with:
+          node-version: '22'
+
+      - name: Print Node Version
+        run: node -v
