@@ -1,29 +1,15 @@
-name: Push workflow
+name: Java Setup
 
-on: push
-
+on:
+  workflow_dispatch:
 jobs:
-  build:
+  java-setup:
     runs-on: ubuntu-latest
     steps:
-      - name: Print build
-        run: echo 'build'
-
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Print test - chrome
-        run: echo 'test chrome'
-      - name: Print test - edge
-        run: echo 'test edge'
-
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Print deploy
-        run: echo 'deploy'
-
-
-
-   
- 
+      - name: Setup Java JDK
+        uses: actions/setup-java@v3.14.1
+        with:
+          java-version: '17'
+          distribution: 'microsoft'
+      - name: Print Java Version
+        run: java --version
