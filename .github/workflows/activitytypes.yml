@@ -1,8 +1,8 @@
-name: ActivityTypes
+name: Activity Types
 
 on:
   pull_request:
-    types: opened
+    types: closed
 
 jobs:
   build:
