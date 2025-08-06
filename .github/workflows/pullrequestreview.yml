@@ -3,7 +3,7 @@ name: Pullrequestreview Workflow
 
 on:
   pull_request_review: 
-    types: [submitted, edited, dismissed] 
+    types: [submitted, edited, dismissed]
   
 
 jobs:
