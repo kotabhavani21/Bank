@@ -1,8 +1,8 @@
 name: Java Setup
 
 on:
-  workflow_dispatch
- jobs:
+ workflow_dispatch
+jobs:
  java-setup:
   runs-on: ubuntu-latest
   steps:
