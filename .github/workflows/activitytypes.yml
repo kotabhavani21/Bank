@@ -2,7 +2,7 @@ name: Activity Types
 
 on:
   pull_request:
-    types: closed
+    types: labeled
 
 jobs:
   build:
