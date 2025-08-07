@@ -1,77 +1,94 @@
-name: Multi-Language CI Pipeline
-
-on:
-  workflow_dispatch:
-
+name: usecaseforgithubcontexts
+ 
+on: push
+ 
 env:
-  GLOBAL_ENV: production
 
+  GLOBAL_ENV_VAR: 'global_value'
+ 
 jobs:
+
   setup:
+
     runs-on: ubuntu-latest
+
     outputs:
-      java-version: ${{ steps.set.outputs.java }}
-      node-version: ${{ steps.set.outputs.node }}
-      python-version: ${{ steps.set.outputs.python }}
-    steps:
-      - id: set
-        run: |
-          echo "java=17" >> $GITHUB_OUTPUT
-          echo "node=18" >> $GITHUB_OUTPUT
-          echo "python=3.11" >> $GITHUB_OUTPUT
 
+      java-version: ${{ steps.set-java.outputs.version }}
+
+      node-version: ${{ steps.set-node.outputs.version }}
+
+      python-version: ${{ steps.set-python.outputs.version }}
+
+    steps:
+
+      - name: Set up Java
+
+        id: set-java
+
+        run: echo "version=17" >> $GITHUB_OUTPUT
+ 
+      - name: Set up Node.js
+
+        id: set-node
+
+        run: echo "version=22" >> $GITHUB_OUTPUT
+ 
+      - name: Set up Python
+
+        id: set-python
+
+        run: echo "version=3.13" >> $GITHUB_OUTPUT
+ 
   build:
+
     needs: setup
+
     strategy:
+
       matrix:
-        include:
-          - lang: java
-            path: java-app
-          - lang: node
-            path: node-app
-          - lang: python
-            path: python-app
+
+        language: [java, node, python]
+
     runs-on: ubuntu-latest
+
     env:
-      BUILD_ENV: ${{ vars.BUILD_ENV }}
+
+      BUILD_ENV_VAR: 'build_value'
+
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
 
-      - name: Setup Java
-        if: ${{ matrix.lang == 'java' }}
-        uses: actions/setup-java@v3
-        with:
-          java-version: ${{ needs.setup.outputs.java-version }}
-          distribution: 'microsoft'
+      - name: Checkout code
 
-      - name: Setup Node.js
-        if: ${{ matrix.lang == 'node' }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ needs.setup.outputs.node-version }}
+        uses: actions/checkout@v3
+ 
+      - name: Set up ${{ matrix.language }}
 
-      - name: Setup Python
-        if: ${{ matrix.lang == 'python' }}
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ needs.setup.outputs.python-version }}
-
-      - name: Install Dependencies
         run: |
-          cd ${{ matrix.path }}
-          if [ "${{ matrix.lang }}" == "java" ]; then mvn install; fi
-          if [ "${{ matrix.lang }}" == "node" ]; then npm install; fi
-          if [ "${{ matrix.lang }}" == "python" ]; then pip install -r requirements.txt; fi
 
-      - name: Run Tests
-        run: echo "Running tests for ${{ matrix.lang }} in ${{ matrix.path }}"
+          if [ "${{ matrix.language }}" == "java" ]; then
 
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Deploy to Production
-        run: echo "Deploying all apps to $GLOBAL_ENV"
-        env:
-          DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
+            echo "Setting up Java ${{ needs.setup.outputs.java-version }}"
+
+          elif [ "${{ matrix.language }}" == "node" ]; then
+
+            echo "Setting up Node.js ${{ needs.setup.outputs.node-version }}"
+
+          elif [ "${{ matrix.language }}" == "python" ]; then
+
+            echo "Setting up Python ${{ needs.setup.outputs.python-version }}"
+
+          fi
+ 
+      - name: Use secret
+
+        run: echo "Using secret ${{ secrets.MY_SECRET }}"
+ 
+      - name: Print environment variables
+
+        run: |
+
+          echo "Global env: ${{ env.GLOBAL_ENV_VAR }}"
+
+          echo "Build env: ${{ env.BUILD_ENV_VAR }}"
+ 
