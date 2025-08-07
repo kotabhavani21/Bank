@@ -5,7 +5,8 @@ on: workflow_dispatch
 jobs:
  gen-msg:
   runs-on: ubuntu-latest
-  outputs: ${{steps.set-message.outputs.greeting}}
+  outputs: 
+    message: ${{steps.set-message.outputs.greeting}}
   steps:
    - id: set-message
      run: |
