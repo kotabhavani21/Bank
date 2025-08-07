@@ -1,4 +1,4 @@
-name: Variable
+name: Variable evn
 
 on:
  workflow_dispatch
