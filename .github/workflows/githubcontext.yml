@@ -11,8 +11,8 @@ jobs:
      run: 
       echo 'Repository details ${{github.repository}}'
       echo 'Repo id ${{github.repository_id}}'
-      echo 'Repo url ${{github.repositoryUrl_url}}'
-      echo 'Repo token ${{github.repository_token}}'
+      echo 'Repo url ${{github.repositoryUrlUrl}}'
+      echo 'Repo token ${{github.repository.token}}'
       echo 'workflow name ${{github.workflow}}'
       echo 'Actor  ${{github.workflow}}'
       echo  'ref details ${{github.ref}}'
