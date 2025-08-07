@@ -1,0 +1,77 @@
+name: Multi-Language CI Pipeline
+
+on:
+  workflow_dispatch:
+
+env:
+  GLOBAL_ENV: production
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      java-version: ${{ steps.set.outputs.java }}
+      node-version: ${{ steps.set.outputs.node }}
+      python-version: ${{ steps.set.outputs.python }}
+    steps:
+      - id: set
+        run: |
+          echo "java=17" >> $GITHUB_OUTPUT
+          echo "node=18" >> $GITHUB_OUTPUT
+          echo "python=3.11" >> $GITHUB_OUTPUT
+
+  build:
+    needs: setup
+    strategy:
+      matrix:
+        include:
+          - lang: java
+            path: java-app
+          - lang: node
+            path: node-app
+          - lang: python
+            path: python-app
+    runs-on: ubuntu-latest
+    env:
+      BUILD_ENV: ${{ vars.BUILD_ENV }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        if: ${{ matrix.lang == 'java' }}
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ needs.setup.outputs.java-version }}
+          distribution: 'microsoft'
+
+      - name: Setup Node.js
+        if: ${{ matrix.lang == 'node' }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ needs.setup.outputs.node-version }}
+
+      - name: Setup Python
+        if: ${{ matrix.lang == 'python' }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ needs.setup.outputs.python-version }}
+
+      - name: Install Dependencies
+        run: |
+          cd ${{ matrix.path }}
+          if [ "${{ matrix.lang }}" == "java" ]; then mvn install; fi
+          if [ "${{ matrix.lang }}" == "node" ]; then npm install; fi
+          if [ "${{ matrix.lang }}" == "python" ]; then pip install -r requirements.txt; fi
+
+      - name: Run Tests
+        run: echo "Running tests for ${{ matrix.lang }} in ${{ matrix.path }}"
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to Production
+        run: echo "Deploying all apps to $GLOBAL_ENV"
+        env:
+          DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
